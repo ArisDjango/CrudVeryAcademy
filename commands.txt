@@ -1,0 +1,6 @@
+python manage.py runserver
+python manage.py makemigrations
+python manage.py makemigrations --dry-run --verbosity 3
+python manage.py migrate
+coverage run --omit='*venv*' manage.py test
+coverage html
