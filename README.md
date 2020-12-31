@@ -190,15 +190,54 @@ isi username, email, isi password aris1985
 
         ]
         ```
-- Tes koneksi serializer -> views -> urls
-    - Fungsi: Mengetes koneksi data di serializer, di tampilkan di view, menggunakan alamat by pass di urls
-    - http://127.0.0.1:8000/api/
-    - Jika berhasil akan menampilkan form Post List
-    - field 'author' mempunyai value winandiaris(superuser)
-    - Coba isi seluruh form, lalu post, maka akan menghasilkan error foreign keyconstraint failed
-    - permasalahannya adalah ada 2 foreign key di blog/models, yaitu fields 'category' dan 'author'. 'category' default=1, namun format default ini belum dibuat
+- PostList() -> GET dan POST
+    - Fungsi: 
+        - Mengetes koneksi data di serializer, di tampilkan di view, menggunakan alamat by pass dari urls
+        - View http://127.0.0.1:8000/api/ Menghasilkan tampilan Post list dummy dengan fungsi GET dan POST hasil dari PostList()
+    - ========================
+       
+    - buka http://127.0.0.1:8000/api/
+    - Jika berhasil akan menampilkan form Post List dengan tombol GET dibagian atas untuk menampilkan output dan POST dibagian bawah form untuk mengirim form.
+    - form field 'author' mempunyai value winandiaris(superuser)
+    - Coba isi seluruh form, lalu POST, maka akan menghasilkan error foreign keyconstraint failed
+    - permasalahannya adalah ada 2 foreign key di blog/models, yaitu fields 'category' dan 'author'. 'category' default=1, namun format default ini belum dibuat, solusi ada di bab selanjutnya
 
-- menghandle error double foreign key
+- Menampilkan menu Blog: Posts dan categorys di admin
+    - Fungsi:
+        - register/menampilkan menu Posts dan categorys di admin panel. Hasil kompilasi input form bisa dilihat disini
+        - dengan begitu error double foreign key teratasi karena category sudah mempunyai defaults=1
+
+    - ========================
     - Buka blog/admin.py
-    - 
-- fdgdfg
+    - code:
+        ```
+        from django.contrib import admin
+        from . import models
+
+        @admin.register(models.Post)
+        class AuthorAdmin(admin.ModelAdmin):
+            list_display = ('title', 'id', 'status', 'slug', 'author')
+            prepopulated_fields = {'slug': ('title',), }
+
+        admin.site.register(models.Category)
+        ```
+    - masuk ke http://127.0.0.1:8000/admin
+    - Jika berhasil akan muncul menu baru Blog, dengan submenu Categorys dan Post
+    - Categorys > Add
+    - Buat 1 category, ex:django
+    - Maka sekarang category mempunyai defaults=1 yaitu 'django'
+    - masuk ke http://127.0.0.1:8000/api/, lalu isi form secara lengkap, jika berhasil akan ditampilkan output json tanpa pesan error
+    - Namun sejauh ini belum bisa tampil detail post di view dan serta belum bisa di delete, solusi ada dibawah
+
+- PostDetail() -> DELETE:
+    - Fungsi: View http://127.0.0.1:8000/api/1 Menghasilkan tampilan Post detail dengan fungsi DELETE Post/category hasil dari PostDetail() 
+    - Masuk blog_api/views.py/PostDetail()
+    - code:
+        ```
+        class PostDetail(RetrieveDestroyAPIView):
+            queryset = Post.objects.all()
+            serializer_class = PostSerializer
+        ```
+    - Jika kita akses http://127.0.0.1:8000/api/1 maka akan muncul detail post
+    - Jika kita DELETE, maka post akan hilang
+- 1:09:25

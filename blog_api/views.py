@@ -11,4 +11,6 @@ class PostList( ListCreateAPIView):
 
 
 class PostDetail(RetrieveDestroyAPIView):
-    pass
+    # pass
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
