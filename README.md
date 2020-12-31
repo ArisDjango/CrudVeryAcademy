@@ -101,6 +101,7 @@ isi username, email, isi password aris1985
     - Jika berhasil, maka localhost akan menampilkan content dari index.html
 
 - Blog/Models.py
+    - Fungsi: Membuat Model database blog
     - code:
     ```
     from django.db import models
@@ -149,47 +150,49 @@ isi username, email, isi password aris1985
     ```
     - Hasil query bisa dilihat di sqlite explorer (install add on bila belum ada)
 
-- Blog_api/serializers.py
-    - code:
-    ```
-    from rest_framework import serializers
-    from blog.models import Post
-
-    class PostSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Post
-            fields = ('id', 'title', 'author', 'excerpt', 'content', 'status')
-    ```
-- Blog_api/views.py
-    - code:
-    ```
-    from rest_framework import generics
-    from blog.models import Post
-    from .serializers import PostSerializer
-
-
-    class PostList(generics.ListCreateAPIView):
-        queryset = Post.postobjects.all()
-        serializer_class = PostSerializer
-        pass
-
-    class PostDetail(generics.RetrieveDestroyAPIView):
-        pass
-    ```
-- by pass Blog_api/views.py (PostDetail/PostList)  ke urls.py
-    - code:
+- model(blog) -> serializers(api) -> Views(api) -> urls(api)
+    - Blog_api/serializers.py
+        - code:
         ```
-        from django.urls import path
-        from .views import PostList, PostDetail
+        from rest_framework import serializers
+        from blog.models import Post
 
-        app_name = 'blog_api'
-
-        urlpatterns = [
-            path('`<int:pk>`/', PostDetail.as_view(), name='detailcreate'),
-            path('', PostList.as_view(), name='listcreate')
-
-        ]
+        class PostSerializer(serializers.ModelSerializer):
+            class Meta:
+                model = Post
+                fields = ('id', 'title', 'author', 'excerpt', 'content', 'status')
         ```
+    - Blog_api/views.py
+        - code:
+        ```
+        from rest_framework import generics
+        from blog.models import Post
+        from .serializers import PostSerializer
+
+
+        class PostList(generics.ListCreateAPIView):
+            queryset = Post.postobjects.all()
+            serializer_class = PostSerializer
+            pass
+
+        class PostDetail(generics.RetrieveDestroyAPIView):
+            pass
+        ```
+    - Blog_api/urls.py
+        - Fungsi: by pass Blog_api/views.py (PostDetail/PostList)  ke urls.py
+        - code:
+            ```
+            from django.urls import path
+            from .views import PostList, PostDetail
+
+            app_name = 'blog_api'
+
+            urlpatterns = [
+                path('`<int:pk>`/', PostDetail.as_view(), name='detailcreate'),
+                path('', PostList.as_view(), name='listcreate')
+
+            ]
+            ```
 - PostList() -> GET dan POST
     - Fungsi: 
         - Mengetes koneksi data di serializer, di tampilkan di view, menggunakan alamat by pass dari urls
