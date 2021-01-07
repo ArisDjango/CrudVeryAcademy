@@ -1,11 +1,3 @@
-# CrudVeryAcademy
-# 1. dfgdg
-- ## A.  dfdfg
-- ## B.  dfdfg
-    - ijlk
-        - hhb
-# ============
-
 # A. BASIC BACKEND-API
 ## 1. Instalasi
 - 1.1. Instalasi Django
