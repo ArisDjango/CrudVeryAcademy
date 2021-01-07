@@ -6,6 +6,7 @@
         - hhb
 # ============
 
+# A. BASIC BACKEND-API
 ## 1. Instalasi
 - 1.1. Instalasi Django
     - clone git
@@ -416,5 +417,4 @@
                 ```
                     self.assertEqual(response.status_code, status.HTTP_201_OK) # koneksi setelah PUT/GET berhasil
                 ```
-        - sdfsd
 
