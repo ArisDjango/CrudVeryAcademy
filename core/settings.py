@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -126,7 +127,20 @@ STATIC_URL = '/static/'
 #PROJECT LEVEL MANAGER
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',#memberikan permission ke semua endpoint
+        # 'rest_framework.permissions.AllowAny',#memberikan permission ke semua endpoint
         # 'rest_framework.permissions.IsAuthenticated', #permission ke user terotentifikasi
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        # 'rest_framework.permissions.IsAdminUser',
     ]
 }
+
+# permission:
+# AllowAny
+# IsAuthenticated
+# IsAdminUser  --> superuser
+# IsAuthenticatedOrReadOnly
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]

@@ -410,3 +410,57 @@
                     self.assertEqual(response.status_code, status.HTTP_201_OK) # koneksi setelah PUT/GET berhasil
                 ```
 
+# B. FRONT END (REACT)
+ada di file terpisah
+
+# C. PERMISSION DAN CUSTOM PERMISSION
+## 1. Default Permission
+- 1.1. Pendahuluan
+    - Sejauh ini yang kita bangun:
+        - Django RestAPI
+        - React App yang mengkonsumsi RestAPI
+    - Pada bab ini akan membahas sistem permission ketika user mengkases blog_api
+    -  https://www.django-rest-framework.org/api-guide/permissions/
+    - .
+
+- 1.2. Authentification Url
+    - Pada saat mengakses blog_api, perlu halaman login untuk mengotentifikasi user agar ketika masuk mempunyai hak sesuai permission setting. Untuk itu perlu dibuat path url nya
+    - Buka core/urls.py, tambahkan:
+        `path('api-auth/', include('rest_framework.urls', namespace='rest_framework')) `
+    - ketika mengakses blog_api, akan muncul button login di kanan atas
+    
+- 1.3 project level permission
+    - project level permission = level project, misal: blog_api
+    - pengaturan permission pada core/settings.py:
+        - AllowAny --> semua bisa crud meskipun bukan user
+        - IsAuthenticated --> harus terdaftar disalah satu user
+        - IsAdminUser  --> harus superuser
+        - IsAuthenticatedOrReadOnly --> user yang authenticated bisa update delete, user anonim hanya bisa read
+    - 
+    - .
+- 1.4. User level permission
+    - setiap add user baru (di admin panel), kita bisa mengatur grup dan permissionnya melalui gui
+    - misal buat user adni, hanya diberi akses view saja pada blog
+
+- 1.5. View level permission
+    - view level permission = dipasang pada object yang mengandung queryset misal: views.py/PostList()
+    
+        - buka blog_api/view.py
+        - from rest_framework.permissions import IsAdminUser
+        - pada PostList tambahkan :
+            - permission_classes = [IsAdminUser]
+            - akses /api, Maka PostList() hanya bisa dilihat ketika user login sebagai admin
+        - atau:
+            - permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+            - akses /api, Maka permission akan mengikuti settingan pada user level permission
+
+## 2. Custom Permissions
+- 2.1. permissions (api)--> HTTP request(react)
+    - permission di api harus bisa diakses CRUD dari react
+    - Rule crud http:
+        - view -> GET
+        - delete -> DELETE
+        - change -> PUT PATCH
+        - add -> POST
+
+

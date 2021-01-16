@@ -1,3 +1,6 @@
+Set-ExecutionPolicy Unrestricted -Scope Process
+& d:/TUTORIAL/PYTHON/CrudVeryAcademy/venv/Scripts/Activate.ps1
+
 python manage.py runserver
 python manage.py makemigrations
 python manage.py makemigrations --dry-run --verbosity 3
