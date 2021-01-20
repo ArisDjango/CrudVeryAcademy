@@ -27,7 +27,7 @@
         - [ 7.4. Testing blog_api ](#A74)
     
 
-- [ B. FRONT END (REACT) ](#B)
+- [ B. FRONT END (REACT) ](https://github.com/ArisDjango/CrudVeryAcademyReact2)
 
 - [ C. PERMISSION DAN CUSTOM PERMISSION ](#C)
     - [ 1. Default Permission ](#C1)
