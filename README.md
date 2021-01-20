@@ -1,9 +1,10 @@
 # DAFTAR ISI
+1. [ A. BASIC_BACKEND-API ](#a.basic_backend)
+2. [ Usage tips. ](#2._Redirect_URL)
 
-- [Heading](#_B._FRONT_END_(REACT))
-  * [Sub-heading](#sub-heading)
-
+<a name="a.basic_backend"></a>
 # A. BASIC_BACKEND-API
+<a name="desc"></a>
 ## 1. Instalasi
 - 1.1. Instalasi Django
     - clone git
@@ -40,6 +41,7 @@
     - `python manage.py runserver`
     - jika berhasil, akan muncul halaman django
 
+<a name="2._Redirect_URL"></a>
 ## 2. Redirect URL
 - 2.1. Redirect url bawaan django ke url buatan sendiri
     - Fungsi: melakukan redirect url bawaan django ke urls.py buatan sendiri
