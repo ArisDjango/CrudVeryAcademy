@@ -6,10 +6,39 @@
         - [ 1.3 Menambahkan installed apps ](#A13)
         - [ 1.4. Menjalankan server django ](#A14)
     - [ 2. Redirect URL ](#A2)
+        - [ 2.1. Redirect url bawaan django ke url buatan sendiri ](#A21)
+        - [ 2.2. Membuat urls.py untuk  __blog__ dan __blog_api__ ](#A22)
+
     - [ 3. Template ](#A3)
+    - [ 4. Models ](#A4)
+        - [ 4.1. Blog/Models.py ](#A41)
+    - [ 5. Blog_api ](#A5)
+        - [ 5.1. Blog_api/serializers.py ](#A51)
+        - [ 5.2. Blog_api/views.py ](#A52)
+        - [ 5.3. Blog_api/urls.py ](#A53)
+    - [ 6. model (blog) -> serializers (api) -> Views (api) -> urls (api) ](#A6)
+        - [ 6.1. Pengetesan PostList() -> GET dan POST ](#A61)
+        - [ 6.2. Menampilkan menu Blog: Posts dan categorys di admin ](#A62)
+        - [ 6.3. Tes PostDetail() -> DELETE ](#A63)
+    - [ 7. Unit Testing blog dan blog_api ](#A7)
+        - [ 7.1. persiapan testing, Setting permission untuk rest ](#A71)
+        - [ 7.2. coverage ](#A72)
+        - [ 7.3. Testing blog ](#A73)
+        - [ 7.4. Testing blog_api ](#A74)
     
+
 - [ B. FRONT END (REACT) ](#B)
-- [ PERMISSION DAN CUSTOM PERMISSION ](#C)
+
+- [ C. PERMISSION DAN CUSTOM PERMISSION ](#C)
+    - [ 1. Default Permission ](#C1)
+        - [ 1.1. Pendahuluan ](#C11)
+        - [ 1.2. Authentification Url ](#C12)
+        - [ 1.3. project level permission ](#C13)
+        - [ 1.4. User level permission ](#C14)
+        - [ 1.5. View level permission ](#C15)
+    - [ 2. Custom Permission ](#C2)
+        - [ 2.1. permissions (api)--> HTTP request(react) ](#C21)
+    
 
 <a name="A"></a>
 # A. BASIC_BACKEND-API
@@ -56,6 +85,7 @@
 
 <a name="A2"></a>
 ## 2. Redirect URL
+<a name="A21"></a>
 - 2.1. Redirect url bawaan django ke url buatan sendiri
     - Fungsi: melakukan redirect url bawaan django ke urls.py buatan sendiri
 
@@ -71,6 +101,7 @@
             path('api/',include('blog_api.urls'))
         ]
         ```
+<a name="A22"></a>
 - 2.2. Membuat urls.py untuk  __blog__ dan __blog_api__
     - Buat blog/urls.py
         - code:
@@ -119,6 +150,7 @@
 
 <a name="A4"></a>
 ## 4. Models
+<a name="A41"></a>
 - 4.1. Blog/Models.py
     - Fungsi: Membuat Model database blog
     - Langkah:
@@ -177,6 +209,7 @@
 
 <a name="A5"></a>
 ## 5. Blog_api
+<a name="A51"></a>
 - 5.1. Blog_api/serializers.py
     - Fungsi: Mengambil data dari model
     - ======================
@@ -190,7 +223,7 @@
                 model = Post
                 fields = ('id', 'title', 'author', 'excerpt', 'content', 'status')
 
-
+<a name="A52"></a>
 - 5.2. Blog_api/views.py
     - Fungsi:
         - Mengambil data dan menampilkan serializer dalam bentuk form sederhana
@@ -212,6 +245,7 @@
         class PostDetail(generics.RetrieveDestroyAPIView):
             pass
         ```
+<a name="A53"></a>
 - 5.3. Blog_api/urls.py
     - Fungsi: by pass Blog_api/views.py (PostDetail/PostList)  ke urls.py, sehingga bisa diakses melalui http://127.0.0.1:8000/api/
     - Argumen post detail `<int:pk>` = mengambil id(int) dengan primary key yang sedang aktif. Misal: http://127.0.0.1:8000/api/1
@@ -230,10 +264,11 @@
         ]
         
         ```
+
 <a name="A6"></a>
 ## 6. model (blog) -> serializers (api) -> Views (api) -> urls (api)
-
-- 6.1. Tes PostList() -> GET dan POST
+<a name="A61"></a>
+- 6.1. Pengetesan PostList() -> GET dan POST
     - Fungsi: 
         - Mengetes koneksi data dari model diekstrak di serializer, di tampilkan di view, menggunakan alamat by pass dari urls
         - View http://127.0.0.1:8000/api/ akan Menghasilkan tampilan Post list dummy dengan fungsi GET dan POST hasil dari PostList()
@@ -245,6 +280,7 @@
     - Coba isi seluruh form, lalu POST, maka akan menghasilkan error foreign keyconstraint failed
     - permasalahannya adalah ada 2 foreign key di blog/models, yaitu fields 'category' dan 'author'. 'category' default=1, namun format default ini belum dibuat, solusi ada di bab selanjutnya
 
+<a name="A62"></a>
 - 6.2. Menampilkan menu Blog: Posts dan categorys di admin
     - Fungsi:
         - register/menampilkan menu Posts dan categorys di admin panel. Hasil kompilasi input form bisa dilihat disini
@@ -272,6 +308,7 @@
     - masuk ke http://127.0.0.1:8000/api/, lalu isi form secara lengkap, jika berhasil akan ditampilkan output json tanpa pesan error
     - Namun sejauh ini belum bisa tampil detail post di view dan serta belum bisa di delete, solusi ada dibawah
 
+<a name="A63"></a>
 - 6.3. Tes PostDetail() -> DELETE:
     - Fungsi: View http://127.0.0.1:8000/api/1 Menghasilkan tampilan Post detail dengan fungsi DELETE Post/category hasil dari PostDetail()
     - =========================
@@ -287,6 +324,7 @@
 
 <a name="A7"></a>
 ## 7. Unit Testing blog dan blog_api
+<a name="A71"></a>
 - 7.1. persiapan testing, Setting permission untuk rest
     - core/settings.py:
     - setting untuk memberikan permission ke semua endpoint
@@ -298,7 +336,7 @@
             ]
         }
         ```
-
+<a name="A72"></a>
 - 7.2. coverage
     - Fungsi: modul tampilan testing, sehingga mudah di inspeksi
     - Instalasi:
@@ -309,6 +347,7 @@
         - buka htmlcov/index.html, untuk melihat hasil test dalam bentuk html
         - maka akan muncul halaman test, terlihat mana yang masih missing, yaitu models.py ada 2 missing
 
+<a name="A73"></a>
 - 7.3. Testing blog
     - Langkah testing blog_api:
         - Import unittest dan object yang dibutuhkan
@@ -380,6 +419,7 @@
             ],
         ```
 
+<a name="A74"></a>
 - 7.4. Testing blog_api
     - Langkah testing blog_api:
         - Import unittest dan object yang dibutuhkan
@@ -442,6 +482,7 @@ ada di file terpisah
 # C. PERMISSION DAN CUSTOM PERMISSION
 <a name="C1"></a>
 ## 1. Default Permission
+<a name="C11"></a>
 - 1.1. Pendahuluan
     - Sejauh ini yang kita bangun:
         - Django RestAPI
@@ -449,13 +490,14 @@ ada di file terpisah
     - Pada bab ini akan membahas sistem permission ketika user mengkases blog_api
     -  https://www.django-rest-framework.org/api-guide/permissions/
     - .
-
+<a name="C12"></a>
 - 1.2. Authentification Url
     - Pada saat mengakses blog_api, perlu halaman login untuk mengotentifikasi user agar ketika masuk mempunyai hak sesuai permission setting. Untuk itu perlu dibuat path url nya
     - Buka core/urls.py, tambahkan:
         `path('api-auth/', include('rest_framework.urls', namespace='rest_framework')) `
     - ketika mengakses blog_api, akan muncul button login di kanan atas
-    
+
+<a name="C13"></a>
 - 1.3 project level permission
     - project level permission = level project, misal: blog_api
     - pengaturan permission pada core/settings.py:
@@ -465,10 +507,13 @@ ada di file terpisah
         - IsAuthenticatedOrReadOnly --> user yang authenticated bisa update delete, user anonim hanya bisa read
     - 
     - .
+
+<a name="C14"></a>
 - 1.4. User level permission
     - setiap add user baru (di admin panel), kita bisa mengatur grup dan permissionnya melalui gui
     - misal buat user adni, hanya diberi akses view saja pada blog
 
+<a name="C15"></a>
 - 1.5. View level permission
     - view level permission = dipasang pada object yang mengandung queryset misal: views.py/PostList()
     
@@ -483,6 +528,7 @@ ada di file terpisah
 
 <a name="C2"></a>
 ## 2. Custom Permissions
+<a name="C21"></a>
 - 2.1. permissions (api)--> HTTP request(react)
     - permission di api harus bisa diakses CRUD dari react
     - Rule crud http:
