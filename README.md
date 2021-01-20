@@ -1,11 +1,21 @@
 # DAFTAR ISI
-1. [ A. BASIC_BACKEND-API ](#a.basic_backend)
-2. [ Usage tips. ](#2._Redirect_URL)
+- [ A. BASIC_BACKEND-API ](#A)
+    - [ 1. Instalasi ](#A1)
+        - [ 1.1. Instalasi Django ](#A11)
+        - [ 1.2. Membuat superuser ](#A12)
+        - [ 1.3 Menambahkan installed apps ](#A13)
+        - [ 1.4. Menjalankan server django ](#A14)
+    - [ 2. Redirect URL ](#A2)
+    - [ 3. Template ](#A3)
+    
+- [ B. FRONT END (REACT) ](#B)
+- [ PERMISSION DAN CUSTOM PERMISSION ](#C)
 
-<a name="a.basic_backend"></a>
+<a name="A"></a>
 # A. BASIC_BACKEND-API
-<a name="desc"></a>
+<a name="A1"></a>
 ## 1. Instalasi
+<a name="A11"></a>
 - 1.1. Instalasi Django
     - clone git
     - buat venv
@@ -21,10 +31,12 @@
         - `python manage.py startapp blog_api`
     - Migrate  `python manage.py migrate`
 
+<a name="A12"></a>
 - 1.2. Membuat superuser
     - `python manage.py createsuperuser`
     - isi username, email, isi password aris1985
 
+<a name="A13"></a>
 - 1.3 Menambahkan installed apps
     - Kita punya 2 app blog_api dan blog yg harus di registrasi
     - Masuk ke folder backendapi>settings.py,
@@ -37,11 +49,12 @@
         ```
     - Karena ada perubahan pada settings, maka lakukan migrate: `python manage.py migrate`
 
+<a name="A14"></a>
 - 1.4. Menjalankan server django
     - `python manage.py runserver`
     - jika berhasil, akan muncul halaman django
 
-<a name="2._Redirect_URL"></a>
+<a name="A2"></a>
 ## 2. Redirect URL
 - 2.1. Redirect url bawaan django ke url buatan sendiri
     - Fungsi: melakukan redirect url bawaan django ke urls.py buatan sendiri
@@ -90,6 +103,7 @@
             'blog',
             'blog_api',
         ```
+<a name="A3"></a>        
 ## 3. Template
 - Menggunakan Template
     - Membuat dir baru `templates/blog/index.html`
@@ -103,6 +117,7 @@
     - Jalankan `python manage.py runserver`
     - Jika berhasil, maka localhost akan menampilkan content dari index.html
 
+<a name="A4"></a>
 ## 4. Models
 - 4.1. Blog/Models.py
     - Fungsi: Membuat Model database blog
@@ -160,6 +175,7 @@
         ```
     - Hasil query bisa dilihat di sqlite explorer (install add on bila belum ada)
 
+<a name="A5"></a>
 ## 5. Blog_api
 - 5.1. Blog_api/serializers.py
     - Fungsi: Mengambil data dari model
@@ -214,6 +230,7 @@
         ]
         
         ```
+<a name="A6"></a>
 ## 6. model (blog) -> serializers (api) -> Views (api) -> urls (api)
 
 - 6.1. Tes PostList() -> GET dan POST
@@ -268,6 +285,7 @@
     - Jika kita akses http://127.0.0.1:8000/api/1 maka akan muncul detail post
     - Jika kita DELETE, maka post akan hilang
 
+<a name="A7"></a>
 ## 7. Unit Testing blog dan blog_api
 - 7.1. persiapan testing, Setting permission untuk rest
     - core/settings.py:
@@ -416,11 +434,13 @@
                 ```
                     self.assertEqual(response.status_code, status.HTTP_201_OK) # koneksi setelah PUT/GET berhasil
                 ```
-
+<a name="B"></a>
 # B. FRONT END (REACT)
 ada di file terpisah
 
+<a name="C"></a>
 # C. PERMISSION DAN CUSTOM PERMISSION
+<a name="C1"></a>
 ## 1. Default Permission
 - 1.1. Pendahuluan
     - Sejauh ini yang kita bangun:
@@ -461,6 +481,7 @@ ada di file terpisah
             - permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
             - akses /api, Maka permission akan mengikuti settingan pada user level permission
 
+<a name="C2"></a>
 ## 2. Custom Permissions
 - 2.1. permissions (api)--> HTTP request(react)
     - permission di api harus bisa diakses CRUD dari react
