@@ -36,6 +36,7 @@
         - [ 1.3. project level permission ](#C13)
         - [ 1.4. User level permission ](#C14)
         - [ 1.5. View level permission ](#C15)
+        - [ 1.6. Studi kasus ](#C16)
     - [ 2. Custom Permission ](#C2)
         - [ 2.1. permissions (api)--> HTTP request(react) ](#C21)
     
@@ -275,7 +276,7 @@
     - ========================
        
     - buka http://127.0.0.1:8000/api/
-    - Jika berhasil akan menampilkan form Post List dengan tombol GET dibagian atas untuk menampilkan output dan POST dibagian bawah form untuk mengirim form.
+    - Jika berhasil akan menampilkan form Post List dengan tombol GET dibagian atas untuk menampilkan output dan POST dibagian bawah form untuk input form.
     - form field 'author' mempunyai value winandiaris(superuser)
     - Coba isi seluruh form, lalu POST, maka akan menghasilkan error foreign keyconstraint failed
     - permasalahannya adalah ada 2 foreign key di blog/models, yaitu fields 'category' dan 'author'. 'category' default=1, namun format default ini belum dibuat, solusi ada di bab selanjutnya
@@ -474,12 +475,15 @@
                 ```
                     self.assertEqual(response.status_code, status.HTTP_201_OK) # koneksi setelah PUT/GET berhasil
                 ```
+
 <a name="B"></a>
 # B. FRONT END (REACT)
-ada di file terpisah
+Front end ada pada file terpisah [disini](https://github.com/ArisDjango/CrudVeryAcademyReact2)
 
 <a name="C"></a>
 # C. PERMISSION DAN CUSTOM PERMISSION
+- [DRF Authentication Documentation](https://www.django-rest-framework.org/api-guide/authentication/)
+- [DRF Permission Documentation](https://www.django-rest-framework.org/api-guide/permissions/)
 <a name="C1"></a>
 ## 1. Default Permission
 <a name="C11"></a>
@@ -488,33 +492,42 @@ ada di file terpisah
         - Django RestAPI
         - React App yang mengkonsumsi RestAPI
     - Pada bab ini akan membahas sistem permission ketika user mengkases blog_api
-    -  https://www.django-rest-framework.org/api-guide/permissions/
+
     - .
 <a name="C12"></a>
-- 1.2. Authentification Url
-    - Pada saat mengakses blog_api, perlu halaman login untuk mengotentifikasi user agar ketika masuk mempunyai hak sesuai permission setting. Untuk itu perlu dibuat path url nya
+- 1.2. Authentification Url / Login button
+    - Tujuan: Pada saat mengakses blog_api, perlu halaman login untuk mengotentifikasi user agar ketika masuk mempunyai hak sesuai permission setting. Untuk itu perlu dibuat path url nya
     - Buka core/urls.py, tambahkan:
         `path('api-auth/', include('rest_framework.urls', namespace='rest_framework')) `
     - ketika mengakses blog_api, akan muncul button login di kanan atas
 
 <a name="C13"></a>
 - 1.3 project level permission
-    - project level permission = level project, misal: blog_api
-    - pengaturan permission pada core/settings.py:
-        - AllowAny --> semua bisa crud meskipun bukan user
-        - IsAuthenticated --> harus terdaftar disalah satu user
-        - IsAdminUser  --> harus superuser
-        - IsAuthenticatedOrReadOnly --> user yang authenticated bisa update delete, user anonim hanya bisa read
+    - Tujuan : mengatur permission pada level project, misal: blog_api, nantinya hanya admin yang bisa mengakses, anonim tidak bisa
+    - buka core/settings.py:
+        - pada bagian REST_FRAMEWORK = {
+              'DEFAULT_PERMISSION_CLASSES':[
+                  'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+              ]
+        - Penjelasan macam2 permission:
+            - IsAuthenticatedOrReadOnly --> user yang authenticated bisa CRUD (POST), user anonim hanya bisa read (GET)
+            - AllowAny --> semua bisa crud meskipun bukan user
+            - IsAuthenticated --> harus terdaftar disalah satu user
+            - IsAdminUser  --> harus superuser
+
     - 
     - .
 
 <a name="C14"></a>
 - 1.4. User level permission
+    - Tujuan: Mengatur permission untuk user
     - setiap add user baru (di admin panel), kita bisa mengatur grup dan permissionnya melalui gui
     - misal buat user adni, hanya diberi akses view saja pada blog
+    - artinya user disini bisa juga diset sebagai superuser/admin
 
 <a name="C15"></a>
-- 1.5. View level permission
+- 1.5. Object level permission
+    - Tujan: Mengatur permission pada level object, misal object view() pada page home, object post() pada page api, dll
     - view level permission = dipasang pada object yang mengandung queryset misal: views.py/PostList()
     
         - buka blog_api/view.py
@@ -526,13 +539,45 @@ ada di file terpisah
             - permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
             - akses /api, Maka permission akan mengikuti settingan pada user level permission
 
+<a name="C16"></a>
+- 1.6. Studi kasus
+    - Studi kasus 1
+        - pengaturan app blog_api:
+            - project level -> admin
+            - object level (view()) -> admin
+            - user -> authUser CRUD
+        - Maka user tidak bisa mengakses blog_api sama sekali (meskipun user punya akses CRUD), hanya admin yang bisa
+
+    - Studi kasus 2
+        - pengaturan app blog_api:
+            - project level -> - IsAuthenticatedOrReadOnly
+            - object level (view()) -> admin
+            - user -> authUser CRUD
+        - Maka user bisa mengakses blog_api, namun hanya GET/READ. Meskipun view level: admin
+
+    - Studi kasus 3
+        - pengaturan app blog_api:
+            - project level -> admin
+            - object level (view()) -> DjangoModelPermissionsOrAnonReadOnly
+            - object level (delete()) -> admin
+            - user -> authUser CRUD
+        - Maka user bisa mengakses blog_api dan CRUD , meskipun project level: admin. Karena pada object level (view()) meng override/mengembalikan ke permission default user yaitu CRUD. namun hanya terbatas page view(), delete() hanya bisa diakses admin
+
 <a name="C2"></a>
 ## 2. Custom Permissions
+[dokumentasi](https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions)
 <a name="C21"></a>
-- 2.1. permissions (api)--> HTTP request(react)
+- 2.1. Pendahuluan
+    - Tujuan : Memberikan custom permission kepada user dengan skenario:
+        - Asumsi, User punya POST content blog (yang memasukkan admin, karena untuk sementara user tidak bisa POST secara langsung dari api)
+        - User bisa akses blog_api, bisa GET seluruh post, namun tidak bisa POST
+        - User bisa akses halaman detail setiap POST (http://127.0.0.1:8000/api/1) namun hanya GET, tidak bisa DELETE
+        - Hanya ketika User mengakses halaman detail post miliknya sendiri, mampu melakukan DELETE dan PUT
+
+    - permissions (api)--> HTTP request(react)
     - permission di api harus bisa diakses CRUD dari react
-    - Rule crud http:
-        - view -> GET
+    - Rule crud http di browser secara umum:
+        - view/read -> GET
         - delete -> DELETE
         - change -> PUT PATCH
         - add -> POST

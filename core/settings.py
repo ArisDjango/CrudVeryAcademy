@@ -135,10 +135,13 @@ REST_FRAMEWORK = {
 }
 
 # permission:
-# AllowAny
-# IsAuthenticated
-# IsAdminUser  --> superuser
-# IsAuthenticatedOrReadOnly
+    # AllowAny
+    # IsAuthenticated
+    # IsAdminUser  --> superuser
+    # IsAuthenticatedOrReadOnly
+
+# permission diatas tidak berlaku jika permission kelas view menggunakan 'DjangoModelPermissionsOrAnonReadOnly'
+# yang artinya menggunakan permission setting di admin gui
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
