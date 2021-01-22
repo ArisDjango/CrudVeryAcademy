@@ -582,4 +582,69 @@ Front end ada pada file terpisah [disini](https://github.com/ArisDjango/CrudVery
         - change -> PUT PATCH
         - add -> POST
 
+- 2.2. Implementasi
+    - code:
+    ```
+    from rest_framework.permissions import SAFE_METHODS, BasePermission
+    ```
+    - Method custom permission
+    ```
+    class PostUserWritePermission(BasePermission):
+    message = 'Editing posts is restricted to the author only.'
+
+    
+    def has_object_permission(self, request, view, obj):
+        
+        if request.method in SAFE_METHODS:
+            return True
+        
+        return obj.author == request.user
+    ```
+    - PostList()code:
+    ```
+    class PostList(ListCreateAPIView):
+    permission_classes = [DjangoModelPermissions]
+    ```
+    - PostDetail() code:
+    ```
+    class PostDetail(RetrieveUpdateDestroyAPIView, PostUserWritePermission):
+    permission_classes = [PostUserWritePermission]
+    ```
+
+- 2.3. Unit Test
+    - fgdf
+    ```
+    def test_post_update(self):
+
+        client = APIClient()
+
+        self.test_category = Category.objects.create(name='django')
+        self.test_user1 = User.objects.create_user(username='test_user1', password='123456789')
+        self.test_user2 = User.objects.create_user(username='test_user2', password='123456789')
+        
+        test_post = Post.objects.create(
+            category_id=1,
+            title='Post Title',
+            excerpt='Post Excerpt',
+            content='Post Content',
+            slug='post-title',
+            author_id=1,
+            status='published')
+        
+        client.login(username=self.test_user1.username, password='123456789')
+
+        url = reverse(('blog_api:detailcreate'), kwargs={'pk':1})
+        
+        response = client.put( url, {
+                'id':1,
+                'title': 'new',
+                'author': 1,
+                'excerpt': 'new',
+                'content': 'new',
+                'status': 'published',
+            }, format='json')
+        print(response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    ```
+
 

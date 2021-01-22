@@ -2,7 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, Retrieve
 from rest_framework.views import APIView
 from blog.models import Post
 from .serializers import PostSerializer
-from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAdminUser, DjangoModelPermissionsOrAnonReadOnly, DjangoModelPermissions
+from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAdminUser, DjangoModelPermissionsOrAnonReadOnly, DjangoModelPermissions, IsAuthenticatedOrReadOnly
 
 
 # Create your views here.
@@ -25,7 +25,8 @@ class PostUserWritePermission(BasePermission):
 # Menampilkan view  ( misal: http://127.0.0.1:8000/api)
 # ListCreateAPIView --> menampilkan view dengan metode GET dan POST (Read post dan Form input post)
 class PostList(ListCreateAPIView):
-    permission_classes = [DjangoModelPermissions] # Halaman ini menggunakan settingan user di admin panel, lebih fleksibel
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [DjangoModelPermissions] # Halaman ini menggunakan settingan user di admin panel, lebih fleksibel
     # permission_classes = [IsAdminUser]
     # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     queryset = Post.postobjects.all()
