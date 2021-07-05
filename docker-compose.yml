@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    blogvery:
+        build: .
+        volumes:
+            - .:/opt/services/blogvery/src
+            - static_volume:/opt/services/blogvery/static
+            - media_volume:/opt/services/blogvery/media
+        networks:
+            - nginx_very_networks
+            - postgres_very_networks
+        depends_on:
+            - postgres_very
+    
+    nginx_very:
+        image: nginx
+        ports:
+            - 8004:80
+        volumes:
+            - ./config/nginx/conf.d:/etc/nginx/conf.d
+            - static_volume:/opt/services/blogvery/static
+            - media_volume:/opt/services/blogvery/media
+        networks:
+            - nginx_very_networks
+        depends_on:
+            - blogvery
+    
+    postgres_very:
+        image: postgres
+        env_file:
+            - config/db/database1_env
+        networks:
+            - postgres_very_networks
+        volumes:
+            - db_blog_very:/var/lib/postgresql/data
+        
+        
+
+networks:
+    nginx_very_networks:
+        driver: bridge
+    postgres_very_networks:
+        driver: bridge
+
+volumes:
+    db_blog_very:
+    static_volume:
+    media_volume:
