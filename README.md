@@ -93,7 +93,7 @@ Deploy docker
     - Fungsi: melakukan redirect url bawaan django ke urls.py buatan sendiri
 
     - buka file core>urls.py, code:
-        ```
+        ```py
         from django.contrib import admin
         from django.urls import path
         from django.conf.urls import include
@@ -108,7 +108,7 @@ Deploy docker
 - 2.2. Membuat urls.py untuk  __blog__ dan __blog_api__
     - Buat blog/urls.py
         - code:
-        ```
+        ```py
         from django.urls import path
         from django.views.generic import TemplateView
 
@@ -121,7 +121,7 @@ Deploy docker
         ```
     - Buat blog_api/urls.py
         - code:
-        ```
+        ```py
         from django.urls import path
         
         app_name = 'blog_api'
@@ -145,7 +145,7 @@ Deploy docker
     - isi index.html dengan content sederhana
     - registrasi di settings.py
         - di templates>dirs
-            ```
+            ```py
             'DIRS': [BASE_DIR / 'templates'],
             ```
     - Jalankan `python manage.py runserver`
@@ -168,7 +168,7 @@ Deploy docker
             - var object --> default manager, instantiasi mencakup semua class dan var
             - var postobject --> custom manager
     - code:
-        ```
+        ```py
         from django.db import models
         from django.contrib.auth.models import User
         from django.utils import timezone
@@ -217,7 +217,7 @@ Deploy docker
     - Fungsi: Mengambil data dari model
     - ======================
     - code:
-        ```
+        ```py
         from rest_framework import serializers
         from blog.models import Post
 
@@ -225,7 +225,7 @@ Deploy docker
             class Meta:
                 model = Post
                 fields = ('id', 'title', 'author', 'excerpt', 'content', 'status')
-
+       ```
 <a name="A52"></a>
 - 5.2. Blog_api/views.py
     - Fungsi:
@@ -234,7 +234,7 @@ Deploy docker
         - RetrieveDestroyAPIView = fungsi DELETE dari api (sementara pass, akan dibahas nanti)
     - ===========================
     - code:
-        ```
+        ```py
         from rest_framework import generics
         from blog.models import Post
         from .serializers import PostSerializer
@@ -254,7 +254,7 @@ Deploy docker
     - Argumen post detail `<int:pk>` = mengambil id(int) dengan primary key yang sedang aktif. Misal: http://127.0.0.1:8000/api/1
     - ================================
     - code:
-        ```
+        ```py
         from django.urls import path
         from .views import PostList, PostDetail
 
@@ -292,7 +292,7 @@ Deploy docker
     - ========================
     - Buka blog/admin.py
     - code:
-        ```
+        ```py
         from django.contrib import admin
         from . import models
 
@@ -317,7 +317,7 @@ Deploy docker
     - =========================
     - Masuk blog_api/views.py/PostDetail()
     - code:
-        ```
+        ```py
         class PostDetail(RetrieveDestroyAPIView):
             queryset = Post.objects.all()
             serializer_class = PostSerializer
@@ -332,7 +332,7 @@ Deploy docker
     - core/settings.py:
     - setting untuk memberikan permission ke semua endpoint
     - code:
-        ```
+        ```py
         REST_FRAMEWORK = {
         'DEFAULT_PERMISSION_CLASSES': [
             'rest_framework.permissions.AllowAny',
@@ -371,13 +371,13 @@ Deploy docker
     - buka blog/test.py
     - code:
         - Import modul test dan beberapa object:
-            ```
+            ```py
             from django.test import TestCase
             from django.contrib.auth.models import User
             from blog.models import Post, Category
             ```
         - Membuat class test dan membuat method dummy data
-            ```
+            ```py
             class Test_Create_post(TestCase):
 
             @classmethod
@@ -389,7 +389,7 @@ Deploy docker
             ```
         - Method blog test
             - variabel Logic, code:
-            ```
+            ```py
             def test_blog_content(self): 
                 post = Post.postobjects.get(id=1) # mengakses class Post di model, list query utama
                 cat = Category.objects.get(id=1) # Mengakses class Category di model
@@ -400,7 +400,7 @@ Deploy docker
                 status = f'{post.status}'
             ```
             - variabel Unit test, code:
-            ```
+            ```py
                 self.assertEqual(author, 'test_user1')
                 self.assertEqual(title, 'Post Title')
                 self.assertEqual(content, 'Post Content')
@@ -413,7 +413,7 @@ Deploy docker
     - jika ada masalah object tidak dikenali, biasanya ada pada linter, untuk itu coba resolve dengan cara:
         - buka setting (tombol kiti bawah)
         - tambahkan:
-        ```
+        ```py
             "python.linting.pylintArgs": [
                 "--load-plugins",
                 "pylint_django",
@@ -441,7 +441,7 @@ Deploy docker
     - buka blog_api/test.py
     - code:
         - Import unittest dan object:
-        ```
+        ```py
         from django.urls import reverse
         from rest_framework import status
         from rest_framework.test import APITestCase
@@ -451,7 +451,7 @@ Deploy docker
         - Membuat class baru untuk test api:
             - Membuat method `test view post`
 
-                ```
+                ```py
                 class PostTest(APITestCase):
 
                 def test_view_post(self):
@@ -461,20 +461,20 @@ Deploy docker
                 ```
             - Membuat method test `create post test`:
                 - var dummy data (category dan user):
-                ```
+                ```py
                 def create_post(self):
                     self.test_category = Category.objects.create(name='django')
                     self.test_user1 = User.objects.create_user(username='test_user1', password='123456789')
                 ```
                 - var dummy post,url reverse, & response:
-                ```
+                ```py
                     data = {"title":"new", "author":1, "excerpt":"new", "content":"new"}
                     url = reverse('blog_api:listcreate')
                     response = self.client.post(url, data, format='json')
 
                 ```
                 - Test status response http 201: past post/get
-                ```
+                ```py
                     self.assertEqual(response.status_code, status.HTTP_201_OK) # koneksi setelah PUT/GET berhasil
                 ```
 
@@ -586,11 +586,11 @@ Front end ada pada file terpisah [disini](https://github.com/ArisDjango/CrudVery
 
 - 2.2. Implementasi
     - code:
-    ```
+    ```py
     from rest_framework.permissions import SAFE_METHODS, BasePermission
     ```
     - Method custom permission
-    ```
+    ```py
     class PostUserWritePermission(BasePermission):
     message = 'Editing posts is restricted to the author only.'
 
@@ -603,19 +603,19 @@ Front end ada pada file terpisah [disini](https://github.com/ArisDjango/CrudVery
         return obj.author == request.user
     ```
     - PostList()code:
-    ```
+    ```py
     class PostList(ListCreateAPIView):
     permission_classes = [DjangoModelPermissions]
     ```
     - PostDetail() code:
-    ```
+    ```py
     class PostDetail(RetrieveUpdateDestroyAPIView, PostUserWritePermission):
     permission_classes = [PostUserWritePermission]
     ```
 
 - 2.3. Unit Test
     - fgdf
-    ```
+    ```py
     def test_post_update(self):
 
         client = APIClient()
